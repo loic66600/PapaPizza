@@ -1,9 +1,12 @@
+<?php
+if($auth::isauth()) $auth::redirect('/');
+?>
 <main class="container-form">
     <h1>je crée mon compte</h1>
     <!-- affichage des erreur si il y en as -->
     <?php if($form_result && $form_result->hasErrors()): ?>
         <div class="alert alert-danger" role="alert"> 
-            <?php $form_result->getErrors()[0]->getMessage() ?>
+            <?php echo $form_result->getErrors()[0]->getMessage() ?>
         </div>
     <?php endif ?>
     <form class="auth-form" action="/register" method="post"> 
@@ -17,11 +20,11 @@
         </div>
         <div class="box-auth-input">
             <label class="detail-description">Confirmer mot de passe</label>
-            <input class="form-control" type=" password" name="password" >
+            <input class="form-control" type=" password" name="password_confirm" >
         </div>
         <div class="box-auth-input">
             <label class="detail-description">Votre nom</label>
-            <input class="form-control" type="text" name="name" >
+            <input class="form-control" type="text" name="lastname" >
         </div>
         <div class="box-auth-input">
             <label class="detail-description">Votre prénom</label>

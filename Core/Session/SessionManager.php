@@ -32,7 +32,7 @@ $_SESSION[$key] = $value;
   * @return void
   * @param string $key
   */
- public static function delete(string $key): void
+ public static function remove(string $key): void
  {
    if(!self::get($key)) return;
    unset($_SESSION[$key]);

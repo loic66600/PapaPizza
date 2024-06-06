@@ -1,4 +1,5 @@
 <main>
+    
     <!-- 1er section -->
     <?php include(PATH_ROOT . 'views' . DS . '_templates' . DS . '_part' . DS . '_first_section.html.php'); ?>
     <!-- 2eme section -->

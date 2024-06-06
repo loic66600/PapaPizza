@@ -1,9 +1,13 @@
+
+<?php
+if($auth::isauth()) $auth::redirect('/');
+?>
 <main class="container-form">
     <h1>je crée mon compte</h1>
     <!-- affichage des erreur si il y en as -->
     <?php if($form_result && $form_result->hasErrors()): ?>
         <div class="alert alert-danger" role="alert"> 
-            <?php $form_result->getErrors()[0]->getMessage() ?>
+            <?php  echo $form_result->getErrors()[0]->getMessage() ?>
         </div>
     <?php endif ?>
 

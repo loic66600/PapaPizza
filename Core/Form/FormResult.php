@@ -40,7 +40,7 @@ class FormResult
     //gestion des message d'echec
     private array $form_errors = [];
 
-    public function getError(): array
+    public function getErrors(): array
     {
         return $this->form_errors;
     }
@@ -59,7 +59,7 @@ class FormResult
      * methode qui permet de verifier si le message d'echec est vide
      * @return bool
      */
-    public function hasError(): bool
+    public function hasErrors(): bool
     {
         return !empty($this->form_errors);
     }

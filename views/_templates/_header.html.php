@@ -7,15 +7,13 @@
     <!-- icone pizza -->
     <link rel="shortcut icon" href="./assets/images/homepage/Pizza-Basilisc.png" type="image/x-icon" />
     <!-- librairie bootstrapcdm -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <!-- librairie bootsrat icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-        integrity="sha384-4LISF5TTJX/fLmGSxO53rV4miRxdg84mZsxmO8Rx5jGtp/LbrixFETvWa5a6sESd" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" integrity="sha384-4LISF5TTJX/fLmGSxO53rV4miRxdg84mZsxmO8Rx5jGtp/LbrixFETvWa5a6sESd" crossorigin="anonymous">
     <!-- feuille de style perso -->
-    <link rel="stylesheet" href="style_homepage.css">
-    <link rel="stylesheet" href="style_pizza.css">
-    <link rel="stylesheet" href="auth_style.css">
+    <link rel="stylesheet" href="/style_homepage.css">
+    <link rel="stylesheet" href="/style_pizza.css">
+    <link rel="stylesheet" href="/auth_style.css">
 
 
     <title>Papa Pizza</title>
@@ -23,7 +21,7 @@
 </head>
 
 <body>
-<header>
+    <header>
         <div id="topbar">
             <div class="line1">
                 <div class="box-phone">
@@ -48,7 +46,7 @@
                     <nav class="custom-navbar">
                         <ul class="custom-ul">
                             <li class="custom-link"><a href="/">Accueil</a></li>
-                            <li class="custom-link"><a href="#">Carte</a></li>
+                            <li class="custom-link"><a href="/pizzas">Carte</a></li>
                             <li class="custom-link"><a href="#">Actualités</a></li>
                             <li class="custom-link"><a href="#">Contact</a></li>
                         </ul>
@@ -58,9 +56,28 @@
                 <div class="nav-profile">
                     <nav class="custom-nav-profile">
                         <ul class="custom-ul-profil">
-                            <li class="custom-link"><a href="/connexion">Se connecter <i class="bi bi-person custom-svg"></i></a>
-                            </li>
+                            <li class="custom-link">
+                                <!-- si je suis en session j affiche mon compte-->
+
+                                <?php if ($auth::isauth()) : ?>
+                                    <div class="dropdown custom-link">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Mon compte
+                                            <i class="bi bi-person custom-svg"></i>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" >
+                                            <li><a class="dropdown-item custom-link" href="">Mon profil</a></li>
+                                            <li><a class="dropdown-item custom-link" href="">Crée une pizza</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item custom-link" href="">Mes pizza</a></li>
+                                            <li><a class="dropdown-item custom-link" href="">mes commandes</a></li>
+                                        </ul>
+                                    </div>
+                                <?php else : ?>
+                                    <a href="/connexion">Se connecter</a>
                             <li class="custom-link end-link"><a href="#"><i class="bi bi-cart"></i></a></li>
+                        <?php endif ?>
+                        </li>
                         </ul>
                     </nav>
                 </div>
@@ -68,4 +85,3 @@
             </div>
         </div>
     </header>
-

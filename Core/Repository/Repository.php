@@ -54,7 +54,7 @@ return $array_result;
      */
     public function readById(string $class_name, int $id):object
     {
-        $q = sprintf("SELECT * FROM %s WHERE id = id", $this->getTableName());
+        $q = sprintf("SELECT * FROM %s WHERE id = :id", $this->getTableName());
         //on prepare la requete
         $stmt = $this->pdo->prepare($q);
         //on verifie que la requete est bien preparer
