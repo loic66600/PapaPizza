@@ -4,27 +4,35 @@ use Core\Session\Session; ?>
 
 <h1 class="title title-detail"><?= $pizza->name ?></h1>
 <!-- si j ai un message d erreur -->
-<?php if($form_result && $form_result->hasErrors()): ?>
-        <div class="alert alert-danger" role="alert"> 
-            <?php  echo $form_result->getErrors()[0]->getMessage() ?>
-        </div>
-    <?php endif ?>
-    <!-- si j ai un message de succes -->
-<?php if($form_success && $form_success->hasSuccess()): ?>
+<?php if ($form_result && $form_result->hasErrors()) : ?>
+    <div class="alert alert-danger" role="alert">
+        <?php echo $form_result->getErrors()[0]->getMessage() ?>
         <script>
             setTimeout(function() {
-               <?php Session::remove(Session::FORM_SUCCESS) ?>;
+                <?php Session::remove(Session::FORM_RESULT) ?>;
             }, 300);
-        </script>
-        <script>
             setTimeout(function() {
-                document.querySelector('.alert.alert-success').remove();
-            }, 3000);
+            document.querySelector('.alert.alert-success').remove();
+        }, 3000);
         </script>
-        <div class="alert alert-success" role="alert"> 
-            <?= $form_success->getSuccessMessage()->getMessage()?>
-        </div>
-    <?php endif ?>
+    </div>
+<?php endif ?>
+<!-- si j ai un message de succes -->
+<?php if ($form_success && $form_success->hasSuccess()) : ?>
+    <script>
+        setTimeout(function() {
+            <?php Session::remove(Session::FORM_SUCCESS) ?>;
+        }, 300);
+    </script>
+    <script>
+        setTimeout(function() {
+            document.querySelector('.alert.alert-success').remove();
+        }, 3000);
+    </script>
+    <div class="alert alert-success" role="alert">
+        <?= $form_success->getSuccessMessage()->getMessage() ?>
+    </div>
+<?php endif ?>
 
 <div class="container-pizza-detail">
     <div class="box-image-detail">
@@ -71,7 +79,7 @@ use Core\Session\Session; ?>
                         <td class="footer-description"><?= number_format($price->price, 2, ',', '.') ?> €</td>
                         <td class="footer-description text-center">
                             <form action="/add/order" method="post">
-                               <!-- on récuper les donnnées du formulaire avec des input hidden -->
+                                <!-- on récuper les donnnées du formulaire avec des input hidden -->
                                 <input type="hidden" name="user_id" value="<?= Session::get(Session::USER)->id ?>">
                                 <input type="hidden" name="pizza_id" value="<?= $pizza->id ?>">
                                 <input type="hidden" name="price" value="<?= $price->price ?>">
