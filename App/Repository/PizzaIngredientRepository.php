@@ -14,35 +14,39 @@ class PizzaIngredientRepository extends Repository
     }
 
     /**
-     * methode qui permet de récuperé tous les ingredients d une pizza grace a sont id
+     * méthode qui récupère les ingrédients d'une pizza grace à son id
      * @param int $pizza_id
      * @return array
      */
-    public function getIngredientByPizzaId(int $pizza_id): array
+    public function getIngredientByPizzaId(int $pizza_id):array
     {
-        //on déclareun tableau vide
+        //on déclare un tableau vide
         $array_result = [];
-        //on crée notre requete SQL
+        //on crée la requete SQL
         $q = sprintf(
-            'SELECT *
-            FROM %1$s AS pi
-            INNER JOIN %2$s  AS i ON pi.`ingredient_id` = i.`id`
+            'SELECT * 
+            FROM %1$s AS pi 
+            INNER JOIN %2$s AS i ON pi.`ingredient_id` = i.`id` 
             WHERE pi.`pizza_id` = :id',
-            $this->getTableName(), //corespond au %1$s
-            AppRepoManager::getrm()->getIngredientRepository()->getTableName() //corespond au %2$s
+            $this->getTableName(), //correspond au %1$s
+            AppRepoManager::getRm()->getIngredientRepository()->getTableName() //correspond au %2$s
         );
 
-        //on prepare la requete
+        //on prépare la requete
         $stmt = $this->pdo->prepare($q);
-        //on verifie que la requete est bien preparer
-        if (!$stmt) return $array_result;
-        //si tous est bon on execute la requete
+
+        //on vérifie que la requete est bien executée
+        if(!$stmt) return $array_result;
+
+        //on execute la requete en passant l'id de la pizza
         $stmt->execute(['id' => $pizza_id]);
-        //on peut recuperer les données de la requete
-        while ($row_data = $stmt->fetch()) {
-            // on crée l'objet Ingredient
+
+        //on récupère les résultats
+        while($row_data = $stmt->fetch()){
+            //a chaque passage de la boucle on instancie un objet ingredient
             $array_result[] = new Ingredient($row_data);
         }
+
         //on retourne le tableau fraichement rempli
         return $array_result;
     }

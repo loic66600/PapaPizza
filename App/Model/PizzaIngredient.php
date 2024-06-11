@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace App\Model;
 
@@ -10,8 +10,8 @@ class PizzaIngredient extends Model
     public int $ingredient_id;
     public int $unit_id;
     public int $quantity;
-  
-   public Pizza $pizza;
-   public Ingredient $ingredient;
-   public Unit $unit;
+
+    public Pizza $pizza;
+    public Ingredient $ingredient;
+    public Unit $unit;
 }

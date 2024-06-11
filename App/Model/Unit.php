@@ -6,5 +6,5 @@ use Core\Model\Model;
 
 class Unit extends Model
 {
-    public int $label;
+    public string $label;
 }

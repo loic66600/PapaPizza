@@ -12,71 +12,78 @@ class PizzaRepository extends Repository
   {
     return 'pizza';
   }
+
   /**
-   * methode qui permet de récuperé toutes les pizzas de l admin
+   * méthode qui permet de récupérer toutes les pizzas de l'admin
    * @return array
    */
   public function getAllPizzas(): array
   {
-    // on déclare un tableau vide
+    //on déclare un tableau vide
     $array_result = [];
-    //on crée notre requete SQL
+
+    //on crée la requête SQL
     $q = sprintf(
-      'SELECT p.`id`, p.`name`, p.`image_path`
+      'SELECT p.`id`, p.`name`, p.`image_path` 
       FROM %1$s AS p
-      INNER JOIN %2$s AS u ON p.`user_id` = u.`id`
-      WHERE u.`is_admin` = 1
+      INNER JOIN %2$s AS u ON p.`user_id` = u.`id` 
+      WHERE u.`is_admin` = 1 
       AND p.`is_active` = 1
       ',
-      $this->getTableName(), //corespond au %1$s
-      AppRepoManager::getrm()->getUserRepository()->getTableName() //corespond au %2$s
+      $this->getTableName(), //correspond au %1$s
+      AppRepoManager::getRm()->getUserRepository()->getTableName() //correspond au %2$s
     );
 
-    //on execute la requete directemente
+    //on peut directement executer la requete
     $stmt = $this->pdo->query($q);
-    //on vérifie que la requete est bien preparer
-    if (!$stmt) return $array_result;
-
-    //on peut recuperer les données de la requete
-    while ($row_data = $stmt->fetch()) {
-      //a chaque passage de la boucle on instancie un objet Pizza
+    //on vérifie que la requete est bien executée
+    if(!$stmt) return $array_result;
+    //on récupère les données que l'on met dans notre tableau
+    while($row_data = $stmt->fetch()){
+      //a chaque passage de la boucle on instancie un objet pizza
       $array_result[] = new Pizza($row_data);
     }
+    //on retourne le tableau fraichement rempli
     return $array_result;
   }
 
   /**
-   * methode qui permet de récuperé une pizza par son id
+   * méthode qui permet de récupérer une pizza grace à son id
    * @param int $pizza_id
-   * @return Pizza
+   * @return ?Pizza
    */
   public function getPizzaById(int $pizza_id): ?Pizza
   {
-    //on crée notre requete SQL
+    //on crée la requete SQL
     $q = sprintf(
-      'SELECT* FROM %s WHERE `id` = :id',
+      'SELECT * FROM %s WHERE `id` = :id',
       $this->getTableName()
     );
-    //on prepare la requete
+
+    //on prépare la requete
     $stmt = $this->pdo->prepare($q);
-    //on verifie que la requete est bien preparer
-    if (!$stmt) return null;
-    //si tous est bon on execute la requete
+
+    //on vérifie que la requete est bien préparée
+    if(!$stmt) return null;
+
+    //on execute la requete en passant les paramètres
     $stmt->execute(['id' => $pizza_id]);
-    //on peut recuperer les données de la requete
+
+    //on récupère le résultat
     $result = $stmt->fetch();
-    //si je n ai pas de résultat on retourne null
-    if (empty($result)) return null;
-    //si j ai un resultat on retourne un objet Pizza
+
+    //si je n'ai pas de résultat, je retourne null
+    if(!$result) return null;
+
+    //si j'ai un résultat, j'instancie un objet Pizza
     $pizza = new Pizza($result);
-//on va hydrager l objet pizza avec les données de la requete
-    $pizza->ingredients = AppRepoManager::getrm()->getPizzaIngredientRepository()->getIngredientByPizzaId($pizza_id);
-    //on va hydrager l objet pizza avec les données de la requete
-    $pizza->prices = AppRepoManager::getrm()->getPriceRepository()->getPriceByPizzaId($pizza_id);
 
-
+    //on va hydrater les ingredients de la pizza
+    $pizza->ingredients = AppRepoManager::getRm()->getPizzaIngredientRepository()->getIngredientByPizzaId($pizza_id);
+    //on va hydrater les prix de la pizza
+    $pizza->prices = AppRepoManager::getRm()->getPriceRepository()->getPriceByPizzaId($pizza_id);
+    //je retourne l'objet Pizza
     return $pizza;
-
-    
   }
+
 }

@@ -1,59 +1,60 @@
-<?php
+<?php 
 
 namespace App\Controller;
 
-use Core\View\View;
 use App\AppRepoManager;
-use Core\Session\Session;
 use Core\Controller\Controller;
+use Core\Session\Session;
+use Core\View\View;
 
 class PizzaController extends Controller
 {
+  /**
+   * méthode qui renvoie la vue de la page d'accueil
+   * @return void
+   */
+  public function home()
+  {
+    //preparation des données à transmettre à la vue
+    
 
-   /**
-    * methode qui revoit la vue d'accueil
-    * @return void
-    */
-   public function home()
-   {
-      $view = new View('home/home');
-      $view->render();
-   }
-   /**
-    * methode qui revoit la vue des pizzas
-    * @return void
+    $view = new View('home/home');
+    $view->render();
+  }
 
-    */
-   public function getPizzas(): void
-   {
-      //le controler dooit récupere le tableau de pizzas pour le donnée a la vue
-      $pizzas = AppRepoManager::getrm()->getPizzaRepository()->getAllPizzas();
-      $view_data = [
-         'h1' => 'Notre carte',
-         'pizzas' => $pizzas
-      ];
+  /**
+   * méthode qui renvoie la vue de la liste des pizzas
+   * @return void
+   */
+  public function getPizzas():void
+  {
+    //le controlleur doit récupérer le tableau de pizzas pour le donnée à la vue
+    $view_data = [
+      'h1' => 'Notre carte',
+      'pizzas' => AppRepoManager::getRm()->getPizzaRepository()->getAllPizzas()
+    ];
 
-      $view = new View('home/pizza');
-      $view->render($view_data);
-   }
-   /**
-    * methode qui revoit la vue d'une pizza
-    * @return void
-    * @param int $id
-    *
-    */
-   public function getPizzaById(int $id): void
+    $view = new View('home/pizzas');
+    $view->render($view_data);
+  }
 
-   {
-     
-      $view_data = [ 
-         'pizza' => AppRepoManager::getrm()->getPizzaRepository()->getPizzaById($id),
-         'form_result'=> Session::get(Session::FORM_RESULT),
-         'form_success'=> Session::get(Session::FORM_SUCCESS),
-      ];
+  /**
+   * méthode qui renvoie la vue d'une pizza grace à son id
+   * @param int $id
+   * @return void
+   */
+  public function getPizzaById(int $id):void
+  {
 
-      $view = new View('home/pizza_detail');
-      $view->render($view_data);
-     
-   }
+    $view_data = [
+      'pizza' => AppRepoManager::getRm()->getPizzaRepository()->getPizzaById($id),
+      'form_result' => Session::get(Session::FORM_RESULT),
+      'form_success' => Session::get(Session::FORM_SUCCESS),
+    ];
+
+
+    $view = new View('home/pizza_detail');
+    $view->render($view_data);
+  }
+
 }

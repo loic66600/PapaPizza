@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7393616ebab92a36a0d4ba1d2be1bc3e
+class ComposerStaticInit310e171a99b850dbe769ec40ca2d69f4
 {
     public static $files = array (
         '07d7f1a47144818725fd8d91a907ac57' => __DIR__ . '/..' . '/laminas/laminas-diactoros/src/functions/create_uploaded_file.php',
@@ -94,9 +94,9 @@ class ComposerStaticInit7393616ebab92a36a0d4ba1d2be1bc3e
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7393616ebab92a36a0d4ba1d2be1bc3e::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7393616ebab92a36a0d4ba1d2be1bc3e::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit7393616ebab92a36a0d4ba1d2be1bc3e::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit310e171a99b850dbe769ec40ca2d69f4::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit310e171a99b850dbe769ec40ca2d69f4::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit310e171a99b850dbe769ec40ca2d69f4::$classMap;
 
         }, null, ClassLoader::class);
     }

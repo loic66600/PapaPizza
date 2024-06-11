@@ -264,25 +264,3 @@ CREATE TABLE IF NOT EXISTS `order_row` (
     FOREIGN KEY (`order_id`) REFERENCES `order`(`id`),
     FOREIGN KEY (`pizza_id`) REFERENCES `pizza`(`id`)
 );
-
-SELECT 
-    p.id, 
-    p.name, 
-    p.image_path, 
-    pi.quantity, 
-    i.label,
-    i.category, 
-    u.label AS unit, 
-    pr.price, 
-    s.label AS size
-FROM pizza AS p 
-INNER JOIN pizza_ingredient AS pi ON p.id = pi.pizza_id
-INNER join ingredient AS i ON pi.ingredient_id = i.id
-INNER join unit AS u ON pi.unit_id = u.id
-INNER JOIN price AS pr ON p.id = pr.pizza_id
-INNER JOIN size AS s ON pr.size_id = s.id
-WHERE p.id = 5; 
-
-
-
-
