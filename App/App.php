@@ -85,6 +85,9 @@ class App implements DatabaseConfigInterface
     $this->router->get('/user/list-custom-pizza/{id}', [UserController::class, 'listCustomPizza'] );
     $this->router->get('/user/pizza/delete/{id}', [UserController::class, 'deletepizza'] );
     $this->router->get('/order/confirm/{order_id}', [OrderController::class, 'paymentStripe'] );
+    $this->router->get('/user/list-order/{id}', [UserController::class, 'listOrder'] );
+    $this->router->get('/user/order/cancel/{id}', [OrderController::class, 'cancelOrder'] );
+    $this->router->get('/user/order/reactived/{id}', [OrderController::class, 'reactivatedOrder'] );
 
    
   }

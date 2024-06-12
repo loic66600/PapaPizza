@@ -250,11 +250,11 @@ class OrderRepository extends Repository
         return $result;
     }
 
-/**
- * methode qui permet de modifier une commande
- * @param array $data
- * @return bool
- */
+    /**
+     * methode qui permet de modifier une commande
+     * @param array $data
+     * @return bool
+     */
     public function updateOrder(array $data): bool
     {
         //on crée la requete SQL
@@ -269,7 +269,45 @@ class OrderRepository extends Repository
         $stmt = $this->pdo->prepare($q);
 
         return $stmt->execute($data);
-
     }
+
+    /**
+     * methode qui permet de recupere toutes les commande
+     * @param int $id
+     * @return array
+     * 
+     */
+    public function findOrderByUser(int $id): array
+    {
+        //on declare un tableau vide
+        $result = [];
+        //on crée la requete SQL
+        $q = sprintf(
+            'SELECT * 
+            FROM `%s` 
+            WHERE `user_id` = :id
+            ORDER BY status ASC',
+            $this->getTableName()
+        );
+        //on prepare la requete
+        $stmt = $this->pdo->prepare($q);
+
+        //on execute la requete
+        if (!$stmt->execute(['id' => $id])) return $result;
+
+        //on recupère le resultat
+        while ($row_data = $stmt->fetch()) {
+
+            $order = new Order($row_data);
+            //on va hydrater notre objet Order avec toutes ses lignes de commandes associées
+            $order->order_rows = AppRepoManager::getRm()->getOrderRowRepository()->findOrderRowByOrder($order->id);
+
+            //on remplissage du tableau
+            $result[$order->status][] = $order;
+        }
+
+        return $result;
+    }
+
 
 }

@@ -108,4 +108,23 @@ class UserController extends Controller
       self::redirect('/user/list-custom-pizza/' . $user_id);
     }
   }
+
+  /**
+   * methode quiretourne la liste des commande d'un utilisateur
+   * @param int $id
+   * @return void
+   * 
+   */
+
+  public function listOrder(int $id): void
+  {
+    $view_data = [
+      'orders' => AppRepoManager::getRm()->getOrderRepository()->findOrderByUser($id),
+      'form_result' => Session::get(Session::FORM_RESULT),
+      'form_success' => Session::get(Session::FORM_SUCCESS)
+    ];
+    $view = new View('user/listOrder');
+
+    $view->render($view_data);
+  }
 }

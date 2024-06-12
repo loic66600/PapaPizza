@@ -231,7 +231,7 @@ class OrderController extends Controller
   }
 
   /** 
-   * METHODE POUR EFFECTUER UN PYMENT SUR STRIPE
+   * METHODE POUR EFFECTUER UN PAYMENT SUR STRIPE
    * @param int $order_id
    * @return void
    * 
@@ -321,8 +321,93 @@ class OrderController extends Controller
           Session::remove(Session::FORM_RESULT);
           Session::set(Session::FORM_SUCCESS, $form_result);
           //on redirige sur la page panier
-          self::redirect('/order/' . $user_id);
+          self::redirect('/user/list-order/' . $user_id);
         }
     
   }
+
+ 
+    /**
+   * METHODE POUR annuler une commande
+   * @param int $id
+   * @return void
+   */
+  public function cancelOrder(int $id): void
+  {
+    $form_result = new FormResult();
+    //on va recupérer la commande
+    $order = AppRepoManager::getRm()->getOrderRepository()->findOrderByIdWithRow($id);
+    //on va reconstruire le tableau de lignes de commande
+    $data = [
+      'id' => $id,
+      'status' => Order::CANCELED
+    ];
+
+    $order = AppRepoManager::getRm()->getOrderRepository()->updateOrder($data);
+    $user_id = Session::get(Session::USER)->id;
+
+    if(!$order) {
+      $form_result->addError(new FormError('Erreur lors de l annulation de la commande'));
+    }else {
+      $form_result->addSuccess(new FormSuccess('Commande annulée'));
+    }
+        //si on a des erreur on les met en sessions
+        if ($form_result->hasErrors()) {
+          Session::set(Session::FORM_RESULT, $form_result);
+          //on redirige sur la page detail de la pizza
+          self::redirect('/user/list-order/' . $user_id);
+        }
+    
+        //si on a des success on les met en sessions
+        if ($form_result->getSuccessMessage()) {
+          Session::remove(Session::FORM_RESULT);
+          Session::set(Session::FORM_SUCCESS, $form_result);
+          //on redirige sur la page panier
+          self::redirect('/user/list-order/' . $user_id);
+        }
+    
+  }
+
+      /**
+   * METHODE POUR annuler une commande
+   * @param int $id
+   * @return void
+   */
+  public function reactivatedOrder(int $id): void
+  {
+    $form_result = new FormResult();
+    //on va recupérer la commande
+    $order = AppRepoManager::getRm()->getOrderRepository()->findOrderByIdWithRow($id);
+    //on va reconstruire le tableau de lignes de commande
+    $data = [
+      'id' => $id,
+      'status' => Order::VALIDATED
+    ];
+
+    $order = AppRepoManager::getRm()->getOrderRepository()->updateOrder($data);
+    $user_id = Session::get(Session::USER)->id;
+
+    if(!$order) {
+      $form_result->addError(new FormError('Erreur lors de la réactivation de la commande'));
+    }else {
+      $form_result->addSuccess(new FormSuccess('Commande réactivée'));
+    }
+        //si on a des erreur on les met en sessions
+        if ($form_result->hasErrors()) {
+          Session::set(Session::FORM_RESULT, $form_result);
+          //on redirige sur la page detail de la pizza
+          self::redirect('/user/list-order/' . $user_id);
+        }
+    
+        //si on a des success on les met en sessions
+        if ($form_result->getSuccessMessage()) {
+          Session::remove(Session::FORM_RESULT);
+          Session::set(Session::FORM_SUCCESS, $form_result);
+          //on redirige sur la page panier
+          self::redirect('/user/list-order/' . $user_id);
+        }
+    
+  }
+
+
 }
