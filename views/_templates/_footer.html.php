@@ -23,7 +23,7 @@
     <!-- 3eme ligne  -->
     <div class="box-footer">
       <p class="footer-description">&copy; 2024 - Tous droits réservés</p>
-      <p class="footer-description">Site réalisé avec &#9825; par ERN24 &#9760;</p>
+      <p class="footer-description">Site réalisé avec &#9825; par loïc ERN24 &#9760;</p>
     </div>
   </footer>
 

@@ -50,4 +50,35 @@ class PizzaIngredientRepository extends Repository
         //on retourne le tableau fraichement rempli
         return $array_result;
     }
+
+      /**
+   * methode qui permet d ajouter des ingredients à une pizza
+   * @param array $data
+   * @return bool
+   * 
+   */
+  public function insertpizzaIngredient(array $data): bool
+  {
+    //on crée la requête SQL
+    $q = sprintf(
+      'INSERT INTO `%s`
+      (`pizza_id`, `ingredient_id`, `unit_id`, `quantity`)
+      VALUES
+      (:pizza_id, :ingredient_id, :unit_id, :quantity)',
+      $this->getTableName()
+    );
+
+    //on prépare la requête
+    $stmt = $this->pdo->prepare($q);
+
+    //on verifie que la requête est bien préparée
+    if (!$stmt) return false;
+
+    //on execute la requête en passant les paramètres
+    $stmt->execute($data);
+
+    //on regarde si on a au moins une ligne qui a ete inseré
+    return $stmt->rowCount() > 0;
+  }
+
 }

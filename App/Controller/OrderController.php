@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use App\AppRepoManager;
 use App\Model\Order;
-use Core\Form\FormResult;
-use Core\Controller\Controller;
+use App\AppRepoManager;
 use Core\Form\FormError;
-use Core\Form\FormSuccess;
+use Stripe\StripeClient;
+use Core\Form\FormResult;
 use Core\Session\Session;
+use Core\Form\FormSuccess;
+use Core\Controller\Controller;
 use Laminas\Diactoros\ServerRequest;
 
 class OrderController extends Controller
@@ -125,7 +126,7 @@ class OrderController extends Controller
    * méthode static qui regarde si on a des ligne dans le panier (en cours)
    * @return bool
    */
-  public static function hasOrderInCart():bool
+  public static function hasOrderInCart(): bool
   {
     $user_id = Session::get(Session::USER)->id;
     $has_order_in_cart = AppRepoManager::getRm()->getOrderRepository()->findLastStatusByUser($user_id, Order::IN_CART);
@@ -150,12 +151,12 @@ class OrderController extends Controller
     $user_id = Session::get(Session::USER)->id;
 
     //on vérifie que la quantité est bien supérieur à 0
-    if($quantity <= 0){
+    if ($quantity <= 0) {
       $form_result->addError(new FormError('La quantité ne peut pas être 0'));
       //on vérifie que la quantité est bien inférieur à 10
-    }elseif($quantity > 10){
+    } elseif ($quantity > 10) {
       $form_result->addError(new FormError('La quantité ne peut pas être supérieur à 10'));
-    }else{
+    } else {
       //on reconstruit un tableau de données pour mettre à jour la ligne de commande
       $data_order_line = [
         'id' => $order_row_id,
@@ -166,9 +167,9 @@ class OrderController extends Controller
       //on appelle la méthode qui permet de modifier la ligne de commande
       $order_line = AppRepoManager::getRm()->getOrderRowRepository()->updateOrderRow($data_order_line);
 
-      if($order_line){
+      if ($order_line) {
         $form_result->addSuccess(new FormSuccess('Quantité modifié'));
-      }else{
+      } else {
         $form_result->addError(new FormError('Erreur lors de la modification de la quantité'));
       }
 
@@ -186,7 +187,6 @@ class OrderController extends Controller
         //on redirige sur la page panier
         self::redirect('/order/' . $user_id);
       }
-
     }
   }
 
@@ -196,21 +196,21 @@ class OrderController extends Controller
    * @param int $id
    * @return void
    */
-  public function deleteOrderRow(ServerRequest $request, int $id):void
+  public function deleteOrderRow(ServerRequest $request, int $id): void
   {
     $form_data = $request->getParsedBody();
     $form_result = new FormResult();
     $user_id = Session::get(Session::USER)->id;
     $order_row = AppRepoManager::getRm()->getOrderRowRepository()->deleteOrderRow($id);
     //si la suppression s'est bien passé, on regarde si la commande a encore des lignes
-    if($order_row){
+    if ($order_row) {
       $countOrder = AppRepoManager::getRm()->getOrderRowRepository()->countOrderRowByOrder($form_data['order_id']);
       $form_result->addSuccess(new FormSuccess('Pizza supprimé du panier'));
-      if($countOrder <= 0){
+      if ($countOrder <= 0) {
         //si je n'ai plus de ligne de commande on supprime la commande
         AppRepoManager::getRm()->getOrderRepository()->deleteOrder($form_data['order_id']);
       }
-    }else{
+    } else {
       $form_result->addError(new FormError('Erreur lors de la suppression de la pizza'));
     }
 
@@ -228,5 +228,101 @@ class OrderController extends Controller
       //on redirige sur la page panier
       self::redirect('/order/' . $user_id);
     }
+  }
+
+  /** 
+   * METHODE POUR EFFECTUER UN PYMENT SUR STRIPE
+   * @param int $order_id
+   * @return void
+   * 
+   */
+  public function paymentStripe(int $order_id): void
+  {
+    //on instancie stripe pour lui passe les clefs
+    //permet de cabler l api de stripe avec notre compte stripe
+    $stripe = new StripeClient(STRIPE_SK);
+
+    if (!AuthController::isAuth()) $this->redirect('/');
+    $user_id = Session::get(Session::USER)->id;
+
+    //on recupérer les lignes de commande du panier
+    $data = AppRepoManager::getRm()->getOrderRepository()->findOrderByIdWithRow($order_id);
+
+    if (!$data) $this->redirect('/');
+
+    //on va redefinir ds variables
+
+    $oreder_number = $data->order_number;
+    $name = "commande n° {$oreder_number}";
+    //on declare un tableau vide pour stocker les payement intents Stripe
+    $product_stripe = [];
+
+    //on boucle sur les lignes de commande
+    foreach ($data->order_rows as $row) {
+
+      $product_stripe[] = [
+        'price_data' => [
+          'currency' => 'eur',
+          'product_data' => [
+            'name' => $row->pizza->name,
+            'description' => "{$name} :\n {$row->pizza->name} x {$row->quantity}",
+          ],
+          'unit_amount' => $row->price * 100,
+        ],
+        'quantity' =>1,
+      ];
+    }
+    //on crée une checkout session de stripe avec le tableau de produits
+    $checkout_session = $stripe->checkout->sessions->create([
+      'line_items' => $product_stripe,
+      'mode' => 'payment',
+      'success_url' => 'http://14-ern24-papapizza.lndo.site/order/success-order/' . $order_id,
+      'cancel_url' => 'http://14-ern24-papapizza.lndo.site/order/' . $user_id,
+
+    ]);
+    header("HTTP/1.1 303 See Other");
+    header('Location: ' . $checkout_session->url);
+   
+  }
+
+  /**
+   * METHODE POUR EFFECTUER UN PYMENT SUR STRIPE
+   * @param int $order_id
+   * @return void
+   */
+  public function successOrder(int $order_id): void
+  {
+    $form_result = new FormResult();
+    //on va recupérer la commande
+    $order = AppRepoManager::getRm()->getOrderRepository()->findOrderByIdWithRow($order_id);
+    //on va reconstruire le tableau de lignes de commande
+    $data = [
+      'id' => $order->id,
+      'status' => Order::VALIDATED
+    ];
+
+    $order = AppRepoManager::getRm()->getOrderRepository()->updateOrder($data);
+    $user_id = Session::get(Session::USER)->id;
+
+    if(!$order) {
+      $form_result->addError(new FormError('Erreur lors de la validation de la commande'));
+    }else {
+      $form_result->addSuccess(new FormSuccess('Commande valide'));
+    }
+        //si on a des erreur on les met en sessions
+        if ($form_result->hasErrors()) {
+          Session::set(Session::FORM_RESULT, $form_result);
+          //on redirige sur la page detail de la pizza
+          self::redirect('/order/' . $user_id);
+        }
+    
+        //si on a des success on les met en sessions
+        if ($form_result->getSuccessMessage()) {
+          Session::remove(Session::FORM_RESULT);
+          Session::set(Session::FORM_SUCCESS, $form_result);
+          //on redirige sur la page panier
+          self::redirect('/order/' . $user_id);
+        }
+    
   }
 }

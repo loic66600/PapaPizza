@@ -17,7 +17,7 @@ class OrderRepository extends Repository
      * méthode qui permet de récupérer la dernière commande
      * @return ?int
      */
-    public function findLastOrder(): ?int 
+    public function findLastOrder(): ?int
     {
         $q = sprintf(
             'SELECT * 
@@ -58,18 +58,18 @@ class OrderRepository extends Repository
         //on prépare la requete
         $stmt = $this->pdo->prepare($q);
         //on vérifie que la requete est bien executée
-        if(!$stmt->execute(['user_id' => $user_id, 'status' => $status])) return false;
+        if (!$stmt->execute(['user_id' => $user_id, 'status' => $status])) return false;
 
         //on récupère les résultats
         $result = $stmt->fetchObject();
 
         //si pas de resultat on retourne false
-        if(!$result) return false;
+        if (!$result) return false;
 
         //si on a des résultats, on vérifie si la commande contient des lignes
         $count_row = $this->countOrderRow($result->id);
         //si on a pas de résultat on renvoi false
-        if(!$count_row) return false;
+        if (!$count_row) return false;
 
         //si on a des résultats on renvoi true
         return true;
@@ -94,12 +94,12 @@ class OrderRepository extends Repository
         $stmt = $this->pdo->prepare($q);
 
         //on vérifie que la requete est bien executée
-        if(!$stmt->execute(['order_id' => $order_id])) return 0;
+        if (!$stmt->execute(['order_id' => $order_id])) return 0;
 
         //on récupère le résultat
         $result = $stmt->fetchObject();
         //si pas de résultat on retourne 0 sinon le nombre de ligne
-        if(!$result || is_null($result)) return 0;
+        if (!$result || is_null($result)) return 0;
         return $result->count;
     }
 
@@ -121,7 +121,7 @@ class OrderRepository extends Repository
         $stmt = $this->pdo->prepare($q);
 
         //si la requete n'est pas executée on retourne null
-        if(!$stmt->execute($data)) return null;
+        if (!$stmt->execute($data)) return null;
 
         //on retourne l'id de la commande
         return $this->pdo->lastInsertId();
@@ -151,13 +151,13 @@ class OrderRepository extends Repository
         $stmt = $this->pdo->prepare($q);
 
         //on vérifie que la requete est bien executée
-        if(!$stmt->execute(['user_id' => $user_id, 'status' => $status])) return null;
+        if (!$stmt->execute(['user_id' => $user_id, 'status' => $status])) return null;
 
         //on récupère les résultats
         $result = $stmt->fetchObject();
 
         //si on n'a pas de résultat on retourne null
-        if(!$result) return null;
+        if (!$result) return null;
 
         //on retourne l'id de la commande
         return $result->id;
@@ -183,13 +183,13 @@ class OrderRepository extends Repository
         $stmt = $this->pdo->prepare($q);
 
         //on execute la requete
-        if(!$stmt->execute(['user_id' => $user_id, 'status' => Order::IN_CART])) return null;
+        if (!$stmt->execute(['user_id' => $user_id, 'status' => Order::IN_CART])) return null;
 
         //on recupère le resultat
         $result = $stmt->fetchObject();
 
         //si pas de résultat on retourne null
-        if(!$result) return null;
+        if (!$result) return null;
 
         //on doit hydrater notre objet Order avec toutes ses lignes de commandes associées
         $result->order_rows = AppRepoManager::getRm()->getOrderRowRepository()->findOrderRowByOrder($result->id);
@@ -218,6 +218,58 @@ class OrderRepository extends Repository
         if (!$stmt) return false;
 
         return $stmt->execute(['id' => $id]);
+    }
+
+    /**
+     * methode qui récupere une commande avec sont id et les lignes de commande
+     * @param int order_id
+     * @return ?object
+     */
+    public function findOrderByIdWithRow(int $order_id): ?object
+    {
+        //on crée la requete SQL
+        $q = sprintf(
+            'SELECT * 
+            FROM `%s` 
+            WHERE `id` = :order_id',
+            $this->getTableName()
+        );
+
+        //on prépare la requete
+        $stmt = $this->pdo->prepare($q);
+
+        //on execute la requete
+        if (!$stmt->execute(['order_id' => $order_id])) return null;
+
+        //on recupère le resultat
+        $result = $stmt->fetchObject();
+
+        //on va hydrater notre objet Order avec toutes ses lignes de commandes associées
+        $result->order_rows = AppRepoManager::getRm()->getOrderRowRepository()->findOrderRowByOrder($result->id);
+
+        return $result;
+    }
+
+/**
+ * methode qui permet de modifier une commande
+ * @param array $data
+ * @return bool
+ */
+    public function updateOrder(array $data): bool
+    {
+        //on crée la requete SQL
+        $q = sprintf(
+            'UPDATE `%s` 
+            SET `status` = :status
+            WHERE `id` = :id',
+            $this->getTableName()
+        );
+
+        //on prepare la requete
+        $stmt = $this->pdo->prepare($q);
+
+        return $stmt->execute($data);
+
     }
 
 }

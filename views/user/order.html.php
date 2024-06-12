@@ -1,38 +1,8 @@
 <?php use Core\Session\Session; ?>
 <main class="d-flex flex-column align-items-center">
-  <h1 class="title title-detail">Mon panier</h1>
+  <h1 class="title title-detail">Mon panier vide</h1>
   <!-- si j'ai un message d'erreur on l'affiche -->
-  <?php if ($form_result && $form_result->hasErrors()) : ?>
-    <div class="alert alert-danger" role="alert">
-      <?= $form_result->getErrors()[0]->getMessage() ?>
-    </div>
-    <script>
-      setTimeout(function() {
-        <?php
-        Session::remove(Session::FORM_RESULT);
-        ?>
-      }, 300);
-      setTimeout(function() {
-        document.querySelector('.alert-danger').remove();
-      }, 3000);
-    </script>
-  <?php endif ?>
-  <!-- si j'ai un message de succes on l'affiche -->
-  <?php if ($form_success && $form_success->hasSuccess()) : ?>
-    <div class="alert alert-success" role="alert">
-      <?= $form_success->getSuccessMessage()->getMessage() ?>
-    </div>
-    <script>
-      setTimeout(function() {
-        <?php
-        Session::remove(Session::FORM_SUCCESS);
-        ?>
-      }, 300);
-      setTimeout(function() {
-        document.querySelector('.alert-success').remove();
-      }, 3000);
-    </script>
-  <?php endif ?>
+  <?php include (PATH_ROOT .'/views/_templates/_message.html.php'); ?>
 
   <?php if ($count_row <= 0) : ?>
     <div class="alert alert-info">
@@ -49,7 +19,7 @@
       <thead>
         <tr>
           <th class="footer-description">Nom de pizza</th>
-          <th class="footer-description">Nombre de pizzas</th>
+          <th class="footer-description">Nombre de pizza</th>
           <th class="footer-description">Modifier quantité</th>
           <th class="footer-description">Prix total</th>
           <th class="footer-description">Actions</th>
@@ -88,6 +58,15 @@
           </tr>
 
         <?php endforeach ?>
+
+        <tr class="footer-description">
+         <td class="footer-description"></td> 
+         <td class="footer-description"></td> 
+         <td class="footer-description">Nombre : <?= $total_pizza ?></td> 
+         <td class="footer-description">Total : <?= number_format($total, 2, ',', '.') ?> €</td> 
+         <td class="footer-description">
+          <a class="btn btn-warning" href="/order/confirm/<?= $order->id ?>">Payer <?= number_format($total, 2, ',', '.') ?> €</a>
+         </td> 
       </tbody>
     </table>
   <?php endif; ?>

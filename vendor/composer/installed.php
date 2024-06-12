@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => NULL,
+        'reference' => 'a290c6ec6185283e6905c9494dcb1147295043ec',
         'name' => '__root__',
         'dev' => true,
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => NULL,
+            'reference' => 'a290c6ec6185283e6905c9494dcb1147295043ec',
             'dev_requirement' => false,
         ),
         'laminas/laminas-diactoros' => array(
@@ -84,6 +84,15 @@
             'provided' => array(
                 0 => '1.0',
             ),
+        ),
+        'stripe/stripe-php' => array(
+            'pretty_version' => 'v14.9.0',
+            'version' => '14.9.0.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../stripe/stripe-php',
+            'aliases' => array(),
+            'reference' => '7165f64ec1b19cb0ce288d553909cd68d8e6a3b1',
+            'dev_requirement' => false,
         ),
     ),
 );

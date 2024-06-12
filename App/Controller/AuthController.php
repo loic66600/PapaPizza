@@ -180,4 +180,14 @@ class AuthController extends Controller
   {
     return !is_null(Session::get(Session::USER));
   }
+
+  /**
+   * methode qui deconnecte l'utilisateur
+   * @return void
+   */
+  public function logout()
+  {
+    Session::remove(Session::USER);
+    self::redirect('/');
+  }
 }

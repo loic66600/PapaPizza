@@ -60,12 +60,14 @@ class App implements DatabaseConfigInterface
   {
     //on va définir des patterns pour les routes
     $this->router->pattern('id', '[0-9]\d*'); //n'autorise que les chiffres
+    $this->router->pattern('order_id', '[0-9]\d*'); //n'autorise que les chiffres
 
 
 
     // PARTIE AUTH:
     // connexion
     $this->router->get('/connexion', [AuthController::class, 'loginForm']);
+    $this->router->get('/logout', [AuthController::class, 'logout']);
     $this->router->post('/login', [AuthController::class, 'login']);
     $this->router->get('/inscription', [AuthController::class, 'registerForm']);
     $this->router->post('/register', [AuthController::class, 'register']);
@@ -80,6 +82,16 @@ class App implements DatabaseConfigInterface
     $this->router->get('/order/{id}', [UserController::class, 'order'] );
     $this->router->post('/order/update/{id}', [OrderController::class, 'updateOrder']);
     $this->router->post('/order-row/delete/{id}', [OrderController::class, 'deleteOrderRow']);
+    $this->router->get('/order/success-order/{order_id}', [OrderController::class, 'successOrder'] );
+    
+    // PARTIE USER:
+    $this->router->get('/user/create-pizza/{id}', [UserController::class, 'createPizza'] );
+    $this->router->post('/add-custom-pizza-form', [PizzaController::class, 'addCustomPizzaForm'] );
+    $this->router->get('/user/list-custom-pizza/{id}', [UserController::class, 'listCustomPizza'] );
+    $this->router->get('/user/pizza/delete/{id}', [UserController::class, 'deletepizza'] );
+    $this->router->get('/order/confirm/{order_id}', [OrderController::class, 'paymentStripe'] );
+
+   
   }
 
   //3. méthode qui démarre le router
