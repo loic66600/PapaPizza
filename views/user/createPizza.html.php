@@ -3,7 +3,7 @@
 use App\AppRepoManager;
 use Core\Session\Session; ?>
 <main class="container-form">
-    <h1 class="title ">Je crée ma boite de dev</h1>
+    <h1 class="title ">Je crée ma pizza</h1>
     <!-- on imorte le template de gestion de success et error -->
     <?php include(PATH_ROOT . '/views/_templates/_message.html.php'); ?>
     <form class="auth-form" action="/add-custom-pizza-form" method="POST" enctype="multipart/form-data">
@@ -12,7 +12,7 @@ use Core\Session\Session; ?>
         <div class="box-auth-input">
             <input type="text" name="name" class="form-control">
         </div>
-        <h3 class="sub-title">Je choisi mes poupées:</h3>
+        <h3 class="sub-title">Je choisi mes ingredients:</h3>
         <div class="box-auth-input list-ingredient">
             <!-- on va boucler sur notre tableau d'ingrédients -->
             <?php foreach (AppRepoManager::getrm()->getIngredientRepository()->getIngredientActiveByCategory() as $category => $ingredients) : ?>
@@ -30,7 +30,7 @@ use Core\Session\Session; ?>
         </div>
         <!--choix de la taille  -->
         <div class="box-auth-input list-size">
-            <h3 class="sub-title">Je choisi ma taille : petite</h3>
+            <h3 class="sub-title">Je choisi ma taille</h3>
             <!-- affichage des tailles -->
             <?php foreach (AppRepoManager::getrm()->getSizeRepository()->getAllSize() as $size) : ?>
                 <div class="d-flex align-items-center">
@@ -41,6 +41,6 @@ use Core\Session\Session; ?>
                 </div>
             <?php endforeach ?>
             <!-- affichage du bouton -->
-            <button class="call-action" type="submit">Crée ma boite de conserve, qui ne périme pas</button>
+            <button class="call-action" type="submit">Crée ma pizza</button>
     </form>
 </main>
