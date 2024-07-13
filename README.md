@@ -36,7 +36,7 @@ Configurez votre base de données dans le fichier config/database.php
 
 Importez la structure de la base de données :
 
-Importez la base de données : lando db-import bdd
+Importez la base de données : lando db-import bdd database_lamp.2024-06-10-1718030684.sql
 
 L'application Papa Pizza intègre désormais Stripe comme solution de paiement, offrant une expérience de commande fluide et sécurisée pour les clients. Grâce à cette intégration, l'application peut accepter divers moyens de paiement en ligne, optimiser les taux de conversion et gérer efficacement les transactions.
 
