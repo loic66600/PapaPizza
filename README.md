@@ -42,15 +42,7 @@ Pour lancer ce projet localement, suivez ces étapes :
 
 4. Configurez votre base de données dans le fichier `config/database.php`
 
-5. Importez la structure de la base de données :
-   ```
-   mysql -u votre_utilisateur -p votre_base_de_donnees < database/structure.sql
-   ```
 
-6. Lancez le serveur PHP intégré :
-   ```
-   php -S localhost:8000 -t public
-   ```
 
 ## 🛠 Technologies utilisées
 
