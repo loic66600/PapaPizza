@@ -27,7 +27,7 @@ Pour lancer ce projet localement, suivez ces étapes :
 
 1. Clonez ce dépôt sur votre machine locale :
    ```
-   git clone https://github.com/votre-username/papa-pizza.git
+   git clone https://github.com/loic66600/PapaPizza.git
    ```
 
 2. Naviguez dans le répertoire du projet :
